@@ -6,8 +6,17 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [currentSection, setCurrentSection] = useState<'welcome' | 'greetings' | 'gallery' | 'surprise' | 'video'>('welcome');
   const [showConfetti, setShowConfetti] = useState(true);
+  const [backgroundVideo, setBackgroundVideo] = useState<string | null>(null);
 
   const confettiColors = ['#9b87f5', '#D946EF', '#F97316', '#0EA5E9', '#FEC6A1', '#E5DEFF'];
+
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      const videoUrl = URL.createObjectURL(file);
+      setBackgroundVideo(videoUrl);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
@@ -173,10 +182,38 @@ const Index = () => {
                 </h2>
                 <Card className="animate-scale-in">
                   <CardContent className="p-0">
-                    <div className="aspect-video bg-gradient-to-br from-purple-300 via-pink-300 to-blue-300 flex flex-col items-center justify-center gap-4">
-                      <Icon name="Play" size={64} className="text-white" />
-                      <p className="text-white text-xl font-medium">Видео будет здесь</p>
-                      <p className="text-white/80 text-sm">Можно вставить ссылку на YouTube или загрузить файл</p>
+                    <div className="aspect-video relative overflow-hidden">
+                      {backgroundVideo ? (
+                        <video
+                          src={backgroundVideo}
+                          autoPlay
+                          loop
+                          muted
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-purple-300 via-pink-300 to-blue-300 flex flex-col items-center justify-center gap-4">
+                          <Icon name="Video" size={64} className="text-white" />
+                          <p className="text-white text-xl font-medium">Загрузите видео для фона</p>
+                        </div>
+                      )}
+                      <div className="absolute bottom-4 right-4">
+                        <label htmlFor="video-upload">
+                          <Button size="lg" className="gap-2 cursor-pointer" asChild>
+                            <span>
+                              <Icon name="Upload" size={20} />
+                              Загрузить видео
+                            </span>
+                          </Button>
+                        </label>
+                        <input
+                          id="video-upload"
+                          type="file"
+                          accept="video/*"
+                          onChange={handleVideoUpload}
+                          className="hidden"
+                        />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
