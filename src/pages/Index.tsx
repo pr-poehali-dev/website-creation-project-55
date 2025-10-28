@@ -7,7 +7,7 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState<'welcome' | 'greetings' | 'gallery' | 'surprise' | 'video'>('welcome');
   const [showConfetti, setShowConfetti] = useState(true);
   const [backgroundVideo, setBackgroundVideo] = useState<string | null>(null);
-  const welcomeBackgroundVideo = 'https://disk.yandex.ru/i/SqT9dNCmAG6Zyw';
+  const welcomeBackgroundVideo = true;
 
   const confettiColors = ['#9b87f5', '#D946EF', '#F97316', '#0EA5E9', '#FEC6A1', '#E5DEFF'];
 
@@ -31,14 +31,13 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
       {welcomeBackgroundVideo && (
         <>
-          <video
-            src={welcomeBackgroundVideo}
-            autoPlay
-            loop
-            muted
-            className="fixed inset-0 w-full h-full object-cover z-0"
+          <iframe
+            src="https://disk.yandex.ru/i/SqT9dNCmAG6Zyw"
+            className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
+            allow="autoplay; fullscreen"
+            style={{ border: 'none', transform: 'scale(1.5)' }}
           />
-          <div className="fixed inset-0 bg-black/30 z-0"></div>
+          <div className="fixed inset-0 bg-black/40 z-0"></div>
         </>
       )}
 
