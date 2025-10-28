@@ -7,7 +7,7 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState<'welcome' | 'greetings' | 'gallery' | 'surprise' | 'video'>('welcome');
   const [showConfetti, setShowConfetti] = useState(true);
   const [backgroundVideo, setBackgroundVideo] = useState<string | null>(null);
-  const [welcomeBackgroundVideo, setWelcomeBackgroundVideo] = useState<string | null>(null);
+  const welcomeBackgroundVideo = 'https://disk.yandex.ru/i/SqT9dNCmAG6Zyw';
 
   const confettiColors = ['#9b87f5', '#D946EF', '#F97316', '#0EA5E9', '#FEC6A1', '#E5DEFF'];
 
@@ -62,26 +62,6 @@ const Index = () => {
                 <Icon name="Heart" className="mr-2" size={24} />
                 Открыть подарок
               </Button>
-              <label htmlFor="welcome-video-upload">
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="text-lg px-8 py-6 bg-white/90 hover:bg-white cursor-pointer"
-                  asChild
-                >
-                  <span>
-                    <Icon name="Upload" className="mr-2" size={24} />
-                    Загрузить фоновое видео
-                  </span>
-                </Button>
-              </label>
-              <input
-                id="welcome-video-upload"
-                type="file"
-                accept="video/*"
-                onChange={handleWelcomeVideoUpload}
-                className="hidden"
-              />
             </div>
           </div>
         </div>
