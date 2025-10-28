@@ -7,6 +7,7 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState<'welcome' | 'greetings' | 'gallery' | 'surprise' | 'video'>('welcome');
   const [showConfetti, setShowConfetti] = useState(true);
   const [backgroundVideo, setBackgroundVideo] = useState<string | null>(null);
+  const [welcomeBackgroundVideo, setWelcomeBackgroundVideo] = useState<string | null>(null);
 
   const confettiColors = ['#9b87f5', '#D946EF', '#F97316', '#0EA5E9', '#FEC6A1', '#E5DEFF'];
 
@@ -15,6 +16,14 @@ const Index = () => {
     if (file && file.type.startsWith('video/')) {
       const videoUrl = URL.createObjectURL(file);
       setBackgroundVideo(videoUrl);
+    }
+  };
+
+  const handleWelcomeVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      const videoUrl = URL.createObjectURL(file);
+      setWelcomeBackgroundVideo(videoUrl);
     }
   };
 
@@ -41,14 +50,24 @@ const Index = () => {
       )}
 
       {currentSection === 'welcome' && (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6 animate-fade-in">
-          <div className="text-center space-y-8 max-w-2xl">
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 animate-fade-in relative">
+          {welcomeBackgroundVideo && (
+            <video
+              src={welcomeBackgroundVideo}
+              autoPlay
+              loop
+              muted
+              className="absolute inset-0 w-full h-full object-cover z-0"
+            />
+          )}
+          <div className="absolute inset-0 bg-black/30 z-10"></div>
+          <div className="text-center space-y-8 max-w-2xl relative z-20">
             <div className="animate-float">
-              <h1 className="text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent mb-4">
+              <h1 className="text-7xl font-bold text-white drop-shadow-2xl mb-4">
                 С Днём Рождения! 🎉
               </h1>
             </div>
-            <p className="text-2xl text-foreground/80 font-medium">
+            <p className="text-2xl text-white drop-shadow-lg font-medium">
               Специальная открытка для особенного человека
             </p>
             <div className="flex flex-wrap gap-4 justify-center mt-12">
@@ -60,6 +79,26 @@ const Index = () => {
                 <Icon name="Heart" className="mr-2" size={24} />
                 Открыть подарок
               </Button>
+              <label htmlFor="welcome-video-upload">
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="text-lg px-8 py-6 bg-white/90 hover:bg-white cursor-pointer"
+                  asChild
+                >
+                  <span>
+                    <Icon name="Upload" className="mr-2" size={24} />
+                    Загрузить фоновое видео
+                  </span>
+                </Button>
+              </label>
+              <input
+                id="welcome-video-upload"
+                type="file"
+                accept="video/*"
+                onChange={handleWelcomeVideoUpload}
+                className="hidden"
+              />
             </div>
           </div>
         </div>
