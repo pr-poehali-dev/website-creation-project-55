@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
@@ -7,9 +7,22 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState<'welcome' | 'greetings' | 'gallery' | 'surprise' | 'video'>('welcome');
   const [showConfetti, setShowConfetti] = useState(true);
   const [backgroundVideo, setBackgroundVideo] = useState<string | null>(null);
-  const welcomeBackgroundVideo = true;
+  const [welcomeBackgroundVideo, setWelcomeBackgroundVideo] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const confettiColors = ['#9b87f5', '#D946EF', '#F97316', '#0EA5E9', '#FEC6A1', '#E5DEFF'];
+  const API_URL = 'https://functions.poehali.dev/1e76754b-e1ed-4a40-9d88-fc0d80c1178e';
+
+  useEffect(() => {
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        if (data.video_data) {
+          setWelcomeBackgroundVideo(data.video_data);
+        }
+      })
+      .catch(err => console.error('Failed to load video:', err));
+  }, []);
 
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -19,11 +32,31 @@ const Index = () => {
     }
   };
 
-  const handleWelcomeVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWelcomeVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith('video/')) {
-      const videoUrl = URL.createObjectURL(file);
-      setWelcomeBackgroundVideo(videoUrl);
+      setIsUploading(true);
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Video = reader.result as string;
+        
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ video_data: base64Video })
+          });
+          
+          if (response.ok) {
+            setWelcomeBackgroundVideo(base64Video);
+          }
+        } catch (err) {
+          console.error('Failed to upload video:', err);
+        } finally {
+          setIsUploading(false);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -31,11 +64,13 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
       {welcomeBackgroundVideo && (
         <>
-          <iframe
-            src="https://disk.yandex.ru/i/SqT9dNCmAG6Zyw"
-            className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
-            allow="autoplay; fullscreen"
-            style={{ border: 'none', transform: 'scale(1.5)' }}
+          <video
+            src={welcomeBackgroundVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="fixed inset-0 w-full h-full object-cover z-0"
           />
           <div className="fixed inset-0 bg-black/40 z-0"></div>
         </>
@@ -61,6 +96,27 @@ const Index = () => {
                 <Icon name="Heart" className="mr-2" size={24} />
                 Открыть подарок
               </Button>
+              <label htmlFor="welcome-video-upload">
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="text-lg px-8 py-6 bg-white/90 hover:bg-white cursor-pointer"
+                  disabled={isUploading}
+                  asChild
+                >
+                  <span>
+                    <Icon name="Upload" className="mr-2" size={24} />
+                    {isUploading ? 'Загрузка...' : 'Загрузить фоновое видео'}
+                  </span>
+                </Button>
+              </label>
+              <input
+                id="welcome-video-upload"
+                type="file"
+                accept="video/*"
+                onChange={handleWelcomeVideoUpload}
+                className="hidden"
+              />
             </div>
           </div>
         </div>

@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS background_videos (
+    id SERIAL PRIMARY KEY,
+    video_data TEXT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

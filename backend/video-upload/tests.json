@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "GET video when none exists",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 404,
+      "expectedBody": {
+        "video_data": null
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST upload video",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "video_data": "data:video/mp4;base64,test"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
