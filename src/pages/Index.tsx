@@ -29,19 +29,21 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+      {welcomeBackgroundVideo && (
+        <>
+          <video
+            src={welcomeBackgroundVideo}
+            autoPlay
+            loop
+            muted
+            className="fixed inset-0 w-full h-full object-cover z-0"
+          />
+          <div className="fixed inset-0 bg-black/30 z-0"></div>
+        </>
+      )}
 
       {currentSection === 'welcome' && (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6 animate-fade-in relative">
-          {welcomeBackgroundVideo && (
-            <video
-              src={welcomeBackgroundVideo}
-              autoPlay
-              loop
-              muted
-              className="absolute inset-0 w-full h-full object-cover z-0"
-            />
-          )}
-          <div className="absolute inset-0 bg-black/30 z-10"></div>
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 animate-fade-in relative z-20">
           <div className="text-center space-y-8 max-w-2xl relative z-20">
             <div className="animate-float">
               <h1 className="text-7xl font-bold text-white drop-shadow-2xl mb-4">
@@ -86,7 +88,7 @@ const Index = () => {
       )}
 
       {currentSection !== 'welcome' && (
-        <div className="min-h-screen p-6">
+        <div className="min-h-screen p-6 relative z-20">
           <div className="max-w-6xl mx-auto">
             <div className="flex gap-2 mb-8 flex-wrap justify-center">
               <Button
